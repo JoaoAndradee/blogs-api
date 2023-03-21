@@ -1,7 +1,6 @@
-// Inicio do projeto
-
 const express = require('express');
 
+const { userRouter } = require('./routers');
 // ...
 
 const app = express();
@@ -13,6 +12,7 @@ app.get('/', (_request, response) => {
 
 app.use(express.json());
 
+app.use('/login', userRouter);
 // ...
 
 // É importante exportar a constante `app`,

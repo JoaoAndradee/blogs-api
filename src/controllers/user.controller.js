@@ -35,7 +35,6 @@ const createUser = async (req, res) => {
 const getAllUsers = async (_req, res) => {
   try {
     const result = await userService.getAllUsers();
-    console.log('NÂO PODE CHEGAR AQUI!!!!!!!');
     return res.status(200).json(result);
   } catch (err) {
     return res.status(500).json({ message: 'Erro interno', error: err.message });

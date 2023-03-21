@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-const secret = 'Batatinha';
+const secret = process.env.JWT_SECRET || 'Batatinha';
 
 const JWT_CONFIG = {
   algorithm: 'HS256',

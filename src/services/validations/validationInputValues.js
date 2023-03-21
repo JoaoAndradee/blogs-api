@@ -1,15 +1,16 @@
+const { createToken } = require('../../auth/authFunctions');
 const { User } = require('../../models');
+const { loginSchema } = require('./schema');
 
 const findEmail = (email) => User.findOne({ where: { email } });
 
-const verifyLogin = async (loginObj) => {
-  const { email, password } = loginObj;
-  if (!email || !password) {
-    return { type: 'INVALID_FORMAT', message: 'Some required fields are missing' };
-  }
-  const result = await findEmail(email);
-  if (result) return { type: 'INVALID_FORMAT', message: 'Invalid fields' };
-  return { type: null, message: '' };
+const verifyLogin = async (user) => {
+  const { error } = loginSchema.validate(user);
+  if (error) return { type: 400, message: 'Some required fields are missing' };
+  const hasUser = await findEmail(user.email);
+  if (!hasUser) return { type: 400, message: 'Invalid fields' };
+  const token = createToken(user.email);
+  return { type: 200, message: token };
 };
 
 module.exports = {

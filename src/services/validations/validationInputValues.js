@@ -15,4 +15,5 @@ const verifyLogin = async (user) => {
 
 module.exports = {
   verifyLogin,
+  findEmail,
 };

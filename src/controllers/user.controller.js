@@ -48,7 +48,7 @@ const getUserById = async (req, res) => {
 
     if (type) return res.status(type).json({ message });
 
-    return res.status(200).json([message]);
+    return res.status(200).json(message);
   } catch (err) {
     return res.status(500).json({ message: 'Erro interno', error: err.message });
   }

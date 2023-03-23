@@ -26,6 +26,11 @@ const postSchema = Joi.object({
   categoryIds: Joi.array().items(Joi.number()).required(),
 });
 
+const postUpdateSchema = Joi.object({
+  title: Joi.string().required(),
+  content: Joi.string().required(),
+});
+
 module.exports = {
   emailSchema,
   passwordSchema,
@@ -33,4 +38,5 @@ module.exports = {
   createUserSchema,
   createCategorySchema,
   postSchema,
+  postUpdateSchema,
 };

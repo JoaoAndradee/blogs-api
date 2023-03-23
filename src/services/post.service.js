@@ -1,5 +1,6 @@
 const { BlogPost, PostCategory, User, Category } = require('../models');
 const { verifyCreatePost, verifyPostFields } = require('./validations/validationCreatePost');
+const { verifyUpdatePost } = require('./validations/validationUpdatePost');
 
 const findIdUser = async (email) => {
   const { id } = await User.findOne({ where: { email } });
@@ -44,9 +45,21 @@ const getPostById = async (id) => {
   return { type: null, message: postId };
 };
 
+const updatePost = async ({ idPost, emailUser, title, content }) => {
+  const errorFormat = verifyUpdatePost({ title, content });
+  if (errorFormat.type) return errorFormat;
+  const { message: { dataValues: { user: { email } } } } = await getPostById(idPost);
+  if (email !== emailUser) return { type: 'INVALID_TOKEN', message: 'Unauthorized user' };
+  const post = await BlogPost.findOne({ where: { id: idPost } });
+  await post.update({ title, content });
+  const { message } = await getPostById(idPost);
+  return { type: null, message };
+};
+
 module.exports = {
   findIdUser,
   addPost,
   getPosts,
   getPostById,
+  updatePost,
 };

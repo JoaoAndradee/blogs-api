@@ -5,8 +5,11 @@ const {
   getPosts,
   getPostById,
   updatePost,
+  deletePost,
 } = require('../services/post.service');
 const { mapError } = require('../utils/errorMap');
+
+const getInternalError = (err) => ({ message: 'Erro interno', error: err.message });
 
 const post = async (req, res) => {
   try {
@@ -18,7 +21,7 @@ const post = async (req, res) => {
     if (type) return res.status(mapError(type)).json({ message });
     res.status(201).json(message);
   } catch (err) {
-    return res.status(500).json({ message: 'Erro interno', error: err.message });
+    return res.status(500).json(getInternalError(err));
   }
 };
 
@@ -27,7 +30,7 @@ const getAllPosts = async (_req, res) => {
     const allPosts = await getPosts();
     return res.status(200).json(allPosts);
   } catch (err) {
-    return res.status(500).json({ message: 'Erro interno', error: err.message });
+    return res.status(500).json(getInternalError(err));
   }
 };
 
@@ -38,7 +41,7 @@ const getPostId = async (req, res) => {
     if (type) return res.status(mapError(type)).json({ message });
     return res.status(200).json(message);
   } catch (err) {
-    return res.status(500).json({ message: 'Erro interno', error: err.message });
+    return res.status(500).json(getInternalError(err));
   }
 };
 
@@ -52,7 +55,20 @@ const updatePostId = async (req, res) => {
     if (type) return res.status(mapError(type)).json({ message });
     return res.status(200).json(message);
   } catch (err) {
-    return res.status(500).json({ message: 'Erro interno', error: err.message });
+    return res.status(500).json(getInternalError(err));
+  }
+};
+
+const deletePostId = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const token = req.headers.authorization;
+    const { data: emailUser } = verifyToken(token);
+    const { type, message } = await deletePost({ emailUser, id });
+    if (type) return res.status(mapError(type)).json({ message });
+    return res.status(204).json();
+  } catch (err) {
+    return res.status(500).json(getInternalError(err));
   }
 };
 
@@ -61,4 +77,5 @@ module.exports = {
   getAllPosts,
   getPostId,
   updatePostId,
+  deletePostId,
 };

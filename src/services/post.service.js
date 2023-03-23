@@ -56,10 +56,22 @@ const updatePost = async ({ idPost, emailUser, title, content }) => {
   return { type: null, message };
 };
 
+const deletePost = async ({ emailUser, id }) => {
+  const posts = await getPosts();
+  const postId = posts.find((post) => post.dataValues.id === Number(id));
+  if (!postId) return { type: 'INVALID_FIELD', message: 'Post does not exist' };
+  const { message: { dataValues: { user: { email } } } } = await getPostById(id);
+  if (email !== emailUser) return { type: 'INVALID_TOKEN', message: 'Unauthorized user' };
+  const post = await BlogPost.findOne({ where: { id } });
+  await post.destroy();
+  return { type: null, message: '' };
+};
+
 module.exports = {
   findIdUser,
   addPost,
   getPosts,
   getPostById,
   updatePost,
+  deletePost,
 };

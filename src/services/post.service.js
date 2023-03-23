@@ -1,4 +1,4 @@
-const { BlogPost, PostCategory, User } = require('../models');
+const { BlogPost, PostCategory, User, Category } = require('../models');
 const { verifyCreatePost, verifyPostFields } = require('./validations/validationCreatePost');
 
 const findIdUser = async (email) => {
@@ -19,7 +19,26 @@ const addPost = async ({ title, content, userId, categoryIds }) => {
   return { type: null, message: post };
 };
 
+const getPosts = async () => {
+  const posts = await BlogPost.findAll({
+    include: [
+      {
+        model: User,
+        as: 'user',
+        attributes: { exclude: ['password'] },
+      },
+      {
+        model: Category,
+        as: 'categories',
+      },
+    ],
+  });
+
+  return posts;
+};
+
 module.exports = {
   findIdUser,
   addPost,
+  getPosts,
 };

@@ -11,7 +11,8 @@ const addPost = async ({ title, content, userId, categoryIds }) => {
   if (errorObj.type) return errorObj;
   const errorId = await verifyCreatePost(categoryIds);
   if (errorId.type) return errorId;
-  const post = await BlogPost.create({ title, content, userId, published: new Date(), updated: new Date() });
+  const post = await BlogPost
+    .create({ title, content, userId, published: new Date(), updated: new Date() });
   const categories = categoryIds
     .map(async (category) => PostCategory.create({ postId: post.id, categoryId: category }));
   Promise.all(categories);

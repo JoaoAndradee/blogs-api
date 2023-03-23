@@ -1,8 +1,11 @@
+const { verifyToken } = require('../auth/authFunctions');
 const { userService } = require('../services');
 const { verifyCreateUser } = require('../services/validations/validationCreateUser');
 const { verifyLogin } = require('../services/validations/validationInputValues');
 const { verifyUserExist } = require('../services/validations/validationUserId');
 const { mapError } = require('../utils/errorMap');
+
+const getInternalError = (err) => ({ message: 'Erro interno', error: err.message });
 
 const login = async (req, res) => {
   try {
@@ -13,7 +16,7 @@ const login = async (req, res) => {
     }
     return res.status(type).json({ message });
   } catch (err) {
-    return res.status(500).json({ message: 'Erro interno', error: err.message });
+    return res.status(500).json(getInternalError(err));
   }
 };
 
@@ -28,7 +31,7 @@ const createUser = async (req, res) => {
 
     return res.status(mapError(type)).json({ message });
   } catch (err) {
-    return res.status(500).json({ message: 'Erro interno', error: err.message });
+    return res.status(500).json(getInternalError(err));
   }
 };
 
@@ -37,7 +40,7 @@ const getAllUsers = async (_req, res) => {
     const result = await userService.getAllUsers();
     return res.status(200).json(result);
   } catch (err) {
-    return res.status(500).json({ message: 'Erro interno', error: err.message });
+    return res.status(500).json(getInternalError(err));
   }
 };
 
@@ -50,7 +53,18 @@ const getUserById = async (req, res) => {
 
     return res.status(200).json(message);
   } catch (err) {
-    return res.status(500).json({ message: 'Erro interno', error: err.message });
+    return res.status(500).json(getInternalError(err));
+  }
+};
+
+const deleteMyProfile = async (req, res) => {
+  try {
+    const token = req.headers.authorization;
+    const { data: emailUser } = verifyToken(token);
+    await userService.deleteProfile(emailUser);
+    return res.status(204).json();
+  } catch (err) {
+    return res.status(500).json(getInternalError(err));
   }
 };
 
@@ -59,4 +73,5 @@ module.exports = {
   createUser,
   getAllUsers,
   getUserById,
+  deleteMyProfile,
 };

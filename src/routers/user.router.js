@@ -21,4 +21,10 @@ router.get(
   userController.getUserById,
 );
 
+router.delete(
+  '/me',
+  validateToken,
+  userController.deleteMyProfile,
+);
+
 module.exports = router;

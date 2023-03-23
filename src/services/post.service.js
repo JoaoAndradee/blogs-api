@@ -37,8 +37,16 @@ const getPosts = async () => {
   return posts;
 };
 
+const getPostById = async (id) => {
+  const posts = await getPosts();
+  const postId = posts.find((post) => post.dataValues.id === Number(id));
+  if (!postId) return { type: 'INVALID_FIELD', message: 'Post does not exist' };
+  return { type: null, message: postId };
+};
+
 module.exports = {
   findIdUser,
   addPost,
   getPosts,
+  getPostById,
 };

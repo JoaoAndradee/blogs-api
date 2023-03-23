@@ -1,5 +1,5 @@
 const { verifyToken } = require('../auth/authFunctions');
-const { addPost, findIdUser, getPosts } = require('../services/post.service');
+const { addPost, findIdUser, getPosts, getPostById } = require('../services/post.service');
 const { mapError } = require('../utils/errorMap');
 
 const post = async (req, res) => {
@@ -25,7 +25,19 @@ const getAllPosts = async (_req, res) => {
   }
 };
 
+const getPostId = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { type, message } = await getPostById(id);
+    if (type) return res.status(mapError(type)).json({ message });
+    return res.status(200).json(message);
+  } catch (err) {
+    return res.status(500).json({ message: 'Erro interno', error: err.message });
+  }
+};
+
 module.exports = {
   post,
   getAllPosts,
+  getPostId,
 };

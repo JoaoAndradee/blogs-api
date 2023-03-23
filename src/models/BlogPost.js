@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
     updated: DataTypes.DATE,
   }, {
     underscored: true,
-    timestamps: false
+    timestamps: false,
   });
 
   BlogPost.associate = (models) => {
